@@ -181,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 callCloudVision(bitmap);
                 mMainImage.setImageBitmap(bitmap);
 
+
             } catch (IOException e) {
                 Log.d(TAG, "Image picking failed because " + e.getMessage());
                 Toast.makeText(this, R.string.image_picker_error, Toast.LENGTH_LONG).show();
@@ -194,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
     private void callCloudVision(final Bitmap bitmap) throws IOException {
         // Switch text to loading
         mImageDetails.setText(R.string.loading_message);
+        mImageDetails.setTextSize(30.0f);
 
         // Do the real work in an async task, because we need to use the network anyway
         new AsyncTask<Object, Void, String>() {
@@ -277,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
 
             protected void onPostExecute(String result) {
                 mImageDetails.setText(result);
+                mImageDetails.setTextSize(30.0f);
             }
         }.execute();
     }
@@ -303,17 +306,10 @@ public class MainActivity extends AppCompatActivity {
 
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
         String message = "I suspect he/she is ... :\n\n";
-
-   //     List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
         List<WebEntity> labels = response.getResponses().get(0).getWebDetection().getWebEntities();
         if (labels != null) {
-          //  for (EntityAnnotation label : labels) {
-            //    message += String.format(Locale.US, "%.3f: %s", label.getScore(), label.getDescription());
-              //  message += "\n";
             for (WebEntity label : labels) {
-                message += label.getDescription() +  " : "
-                        + label.getScore();
-                message +="\n";
+                message += label.getDescription();
             }
 
         } else {
